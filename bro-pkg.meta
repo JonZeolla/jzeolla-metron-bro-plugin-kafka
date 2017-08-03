@@ -1,0 +1,8 @@
+[package]
+description = A Bro log writer plugin that sends logging output to Kafka.
+tags = kafka, logging, logging writer, plugin, bro plugin
+script_dir = scripts
+build_command = ( ./configure )
+test_command = cd tests && btest -d
+plugin_dir = build
+version = 0.2
