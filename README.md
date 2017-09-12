@@ -30,7 +30,7 @@ Installation
 
     ```
     $ bro -N Bro::Kafka
-    Bro::Kafka - Writes logs to Kafka (dynamic, version 0.1)
+    Bro::Kafka - Writes logs to Kafka (dynamic, version 0.2)
     ```
 
 Activation
