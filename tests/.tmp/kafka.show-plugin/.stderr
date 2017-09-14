@@ -1,3 +1,0 @@
-warning: Could not open seed file '/testing/btest/random.seed': No such file or directory
-fatal error: Could not load seeds from file '/testing/btest/random.seed'.
-

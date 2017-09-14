@@ -1,1 +1,0 @@
-bro -NN Bro::Kafka >output (expect success)
