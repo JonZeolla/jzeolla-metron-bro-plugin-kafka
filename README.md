@@ -29,8 +29,8 @@ Installation
 1. Run the following command to ensure that the plugin was installed successfully.
 
     ```
-    $ bro -N Bro::Kafka
-    Bro::Kafka - Writes logs to Kafka (dynamic, version 0.2)
+    $ bro -N Apache::Kafka
+    Apache::Kafka - Writes logs to Kafka (dynamic, version 0.2)
     ```
 
 Activation
@@ -46,7 +46,7 @@ The goal in this example is to send all HTTP and DNS records to a Kafka topic na
  * Defining `logs_to_send` will ensure that only HTTP and DNS records are sent.
 
 ```
-@load Bro/Kafka/logs-to-kafka.bro
+@load Apache/Kafka/logs-to-kafka.bro
 redef Kafka::logs_to_send = set(HTTP::LOG, DNS::LOG);
 redef Kafka::topic_name = "bro";
 redef Kafka::kafka_conf = table(
@@ -63,7 +63,7 @@ It is also possible to send each log stream to a uniquely named topic.  The goal
  * Each log writer accepts a separate configuration table.
 
 ```
-@load Bro/Kafka/logs-to-kafka.bro
+@load Apache/Kafka/logs-to-kafka.bro
 redef Kafka::topic_name = "";
 redef Kafka::tag_json = T;
 
@@ -101,7 +101,7 @@ You may want to configure bro to filter log messages with certain characteristic
  * If the log message contains a 128 byte long source or destination IP address, the log is not sent to kafka.
 
 ```
-@load Bro/Kafka/logs-to-kafka.bro
+@load Apache/Kafka/logs-to-kafka.bro
 redef Kafka::topic_name = "bro";
 redef Kafka::tag_json = T;
 
@@ -242,7 +242,7 @@ ${KAFKA_HOME}/kafka-broker/bin/kafka-acls.sh --authorizer kafka.security.auth.Si
 
 The following is how the `${BRO_HOME}/share/bro/site/local.bro` looks:
 ```
-@load Bro/Kafka/logs-to-kafka.bro
+@load Apache/Kafka/logs-to-kafka.bro
 redef Kafka::logs_to_send = set(HTTP::LOG, DNS::LOG);
 redef Kafka::topic_name = "bro";
 redef Kafka::tag_json = T;
