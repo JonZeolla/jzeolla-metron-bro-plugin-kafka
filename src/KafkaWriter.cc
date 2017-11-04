@@ -29,6 +29,14 @@ KafkaWriter::KafkaWriter(WriterFrontend* frontend): WriterBackend(frontend), for
   // tag_json - thread local copy
   tag_json = BifConst::Kafka::tag_json;
 
+  // json_timestamps
+  ODesc tsfmt;
+  BifConst::Kafka::json_timestamps->Describe(&tsfmt);
+  json_timestamps.assign(
+      (const char*) tsfmt.Bytes(),
+      tsfmt.Len()
+    );
+
   // topic name - thread local copy
   topic_name.assign(
     (const char*)BifConst::Kafka::topic_name->Bytes(),
@@ -58,16 +66,33 @@ KafkaWriter::~KafkaWriter()
 
 bool KafkaWriter::DoInit(const WriterInfo& info, int num_fields, const threading::Field* const* fields)
 {
+    // Timeformat object, default to TS_EPOCH
+    threading::formatter::JSON::TimeFormat tf = threading::formatter::JSON::TS_EPOCH;
+
     // if no global 'topic_name' is defined, use the log stream's 'path'
     if(topic_name.empty()) {
         topic_name = info.path;
     }
 
+    // format timestamps
+    if ( strcmp(json_timestamps.c_str(), "JSON::TS_EPOCH") == 0 )
+      tf = threading::formatter::JSON::TS_EPOCH;
+    else if ( strcmp(json_timestamps.c_str(), "JSON::TS_MILLIS") == 0 )
+      tf = threading::formatter::JSON::TS_MILLIS;
+    else if ( strcmp(json_timestamps.c_str(), "JSON::TS_ISO8601") == 0 )
+      tf = threading::formatter::JSON::TS_ISO8601;
+    else
+    {
+      Error(Fmt("KafkaWriter::DoInit: Invalid JSON timestamp format %s",
+        json_timestamps.cstr()));
+      return false;
+    }
+
     // initialize the formatter
     if(BifConst::Kafka::tag_json) {
-      formatter = new threading::formatter::TaggedJSON(info.path, this, threading::formatter::JSON::TS_EPOCH);
+      formatter = new threading::formatter::TaggedJSON(info.path, this, tf);
     } else {
-      formatter = new threading::formatter::JSON(this, threading::formatter::JSON::TS_EPOCH);
+      formatter = new threading::formatter::JSON(this, tf);
     }
 
     // is debug enabled

@@ -68,6 +68,7 @@ private:
     static const string default_topic_key;
     string stream_id;
     bool tag_json;
+    string json_timestamps;
     map<string, string> kafka_conf;
     string topic_name;
     threading::formatter::Formatter *formatter;
