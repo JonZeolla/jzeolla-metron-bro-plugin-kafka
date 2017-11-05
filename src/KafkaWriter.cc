@@ -20,7 +20,11 @@
 using namespace logging;
 using namespace writer;
 
-KafkaWriter::KafkaWriter(WriterFrontend* frontend): WriterBackend(frontend), formatter(NULL), producer(NULL), topic(NULL)
+KafkaWriter::KafkaWriter(WriterFrontend* frontend):
+    WriterBackend(frontend),
+    formatter(NULL),
+    producer(NULL),
+    topic(NULL)
 {
   // need thread-local copies of all user-defined settings coming from
   // bro scripting land.  accessing these is not thread-safe and 'DoInit'
@@ -62,7 +66,21 @@ KafkaWriter::KafkaWriter(WriterFrontend* frontend): WriterBackend(frontend), for
 }
 
 KafkaWriter::~KafkaWriter()
-{}
+{
+    // Cleanup Kafka resources
+    while (producer->outq_len() > 0) {
+        producer->poll(1000);
+    }
+    producer->poll(1000);
+
+    // Cleanup all the things
+    delete topic;
+    delete producer;
+    delete formatter;
+    delete conf;
+    delete topic_conf;
+
+}
 
 bool KafkaWriter::DoInit(const WriterInfo& info, int num_fields, const threading::Field* const* fields)
 {

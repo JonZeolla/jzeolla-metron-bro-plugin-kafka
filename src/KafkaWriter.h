@@ -47,7 +47,7 @@ namespace logging { namespace writer {
 class KafkaWriter : public WriterBackend {
 
 public:
-    KafkaWriter(WriterFrontend* frontend);
+    explicit KafkaWriter(WriterFrontend* frontend);
     ~KafkaWriter();
 
     static WriterBackend* Instantiate(WriterFrontend* frontend)
