@@ -19,8 +19,8 @@
 module Kafka;
 
 export {
-	##
-	## which log streams should be sent to kafka?
+	## Specify a set of logs to send by log id. An empty set will
+	## default to all logs being sent.
 	## example:
 	##		redef Kafka::logs_to_send = set(Conn::Log, HTTP::LOG, DNS::LOG);
 	##
@@ -31,7 +31,7 @@ event bro_init() &priority=-5
 {
 	for (stream_id in Log::active_streams)
 	{
-		if (stream_id in Kafka::logs_to_send)
+		if ( (|logs_to_send| == 0) || stream_id in Kafka::logs_to_send )
 		{
 			local filter: Log::Filter = [
 				$name = fmt("kafka-%s", stream_id),
