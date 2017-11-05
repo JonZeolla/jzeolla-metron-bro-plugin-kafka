@@ -84,7 +84,7 @@ bool KafkaWriter::DoInit(const WriterInfo& info, int num_fields, const threading
     else
     {
       Error(Fmt("KafkaWriter::DoInit: Invalid JSON timestamp format %s",
-        json_timestamps.cstr()));
+        json_timestamps.c_str()));
       return false;
     }
 
